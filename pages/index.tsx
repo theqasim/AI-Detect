@@ -1,5 +1,7 @@
 import Head from "next/head";
 import { useState } from "react";
+import { ChangeEvent } from "react";
+
 import styles from "@/styles/Home.module.css";
 
 export default function Home() {
@@ -29,15 +31,15 @@ export default function Home() {
             : (data[0][1].score * 100).toFixed(1);
         console.log(`AI Detection Score: ${score}%`);
 
-        setScore(score);
-        setProgress(score);
+        setScore(Number(score));
+        setProgress(Number(score));
         setIsFake(data[0][0].label === "Fake");
         setShowDetection(true);
       })
       .catch((error) => console.error(error));
   };
 
-  const handleInputChange = (event) => {
+  const handleInputChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
     setText(event.target.value);
   };
 
@@ -56,16 +58,16 @@ export default function Home() {
   return (
     <>
       <Head>
-        <title>Add Text | My App</title>
+        <title>AI Content Detector</title>
         <meta name="description" content="Add some text and analyze it" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <main className="h-screen flex flex-col items-center justify-center relative">
+      <main className="h-screen flex flex-col items-center justify-center relative flex-col">
         <div className="absolute top-0 left-0 w-full h-full bg-[#e8f0f7]"></div>
-        <div className="relative z-10 grid grid-cols-2 gap-6 rounded-xl p-4 pr-4 bg-white shadow-md sm:w-8/12 md:w-10/12 w-7/12 h-4/5">
-          <div className="flex flex-col justify-center col-span-1">
-            <h1 className="text-xl font-bold mb-4 ml-4">AI Content Detector</h1>
+        <div className="relative z-10 grid grid-cols-1 md:grid-cols-2 gap-6 rounded-xl p-4 pr-4 bg-white shadow-md sm:w-8/12 md:w-10/12 w-7/12 md:h-4/5">
+          <div className="flex flex-col justify-center">
+            <h1 className="text-xl font-bold mb-4 ml-1">AI Content Detector</h1>
             <textarea
               className="h-40 p-4 rounded-lg shadow-md border border-gray-300 resize-none"
               placeholder="Enter some text..."
@@ -74,45 +76,44 @@ export default function Home() {
             <button
               className="bg-blue-500 hover:bg-blue-600 text-white font-medium mt-4 py-2 px-6 rounded-lg"
               onClick={analyzeText}
-            >
-              Analyze Text
-            </button>
-          </div>
+              >
+                Analyze Text
+              </button>
+            </div>
 
-          <div className="flex flex-col justify-center col-span-1 relative">
-            <div className="absolute top-0 left-0 h-full w-0.5 bg-gray-300 drop-shadow-sm"></div>
+            <div className="flex flex-col justify-center relative">
+            <div className="md:absolute top-0 left-0 h-full w-0.5 bg-gray-300 drop-shadow-sm"></div>
             <div className="flex flex-col justify-center col-span-1 relative">
-              <div className="absolute top-0 left-0 h-full w-0.5 bg-gray-300 drop-shadow-sm"></div>
+              <div className="md:absolute top-0 left-0 h-full w-0.5 bg-gray-300 drop-shadow-sm"></div>
               <div className="flex flex-col items-center justify-center">
-                <div className="relative w-10/12">
-                  <div
-                    className={`progress-text text-center text-lg font-bold ${textColor}`}
-                  >
+                <div className="relative w-10/12 ">
+                  <div className={`progress-text text-center text-xl font-bold ${textColor}`}>
                     {progress === 10 ? "0%" : `${progress}%`}
                   </div>
-                  <div className="progress-bar bg-gray-200 h-8 rounded-lg  relative overflow-hidden">
+                  <div className="progress-bar bg-gray-200 h-12 rounded-lg relative overflow-hidden">
                     <div
                       className="progress-bar-fill bg-blue-500 h-full absolute left-0 top-0"
                       style={{ width: `${progress}%` }}
                     ></div>
                   </div>
                 </div>
-                <div
-                  className={`text-sm mt-4 ${textColor} ${
-                    progress === 0 ? "hidden" : "block"
-                  }`}
-                >
-                  {progress === 10
-                    ? ""
-                    : isFake
-                    ? "Your text is likely AI generated"
-                    : "Your text is likely human written"}
+
+                  <div
+                    className={`text-sm mt-4 ${textColor} ${
+                      progress === 0 ? "hidden" : "block"
+                    }`}
+                  >
+                    {progress === 10
+                      ? ""
+                      : isFake
+                      ? "Your text is likely AI generated"
+                      : "Your text is likely human written"}
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
-      </main>
-    </>
+        </main>
+      </>
   );
 }
