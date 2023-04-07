@@ -2,6 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 @font-face {
-    font-family: "mons";
-    src: url("../public/fonts/Montserrat-Medium.ttf");
+  font-family: "mons";
+  src: url("../public/fonts/Montserrat-Medium.ttf");
 }
