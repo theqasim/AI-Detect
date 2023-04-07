@@ -101,7 +101,7 @@ export default function Home() {
 
                   <div
                     className={`text-sm mt-4 ${textColor} ${
-                      progress === 0 ? "hidden" : "block"
+                      progress === -1 ? "hidden" : "block"
                     }`}
                   >
                     {progress === 10
