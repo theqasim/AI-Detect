@@ -11,33 +11,43 @@ export default function Home() {
   let [isFake, setIsFake] = useState(false);
   let [showDetection, setShowDetection] = useState(false);
 
-  const analyzeText = () => {
-    fetch(
-      "https://api-inference.huggingface.co/models/roberta-base-openai-detector",
-      {
-        headers: {
-          Authorization: "Bearer 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",
-          "Content-Type": "application/json",
-        },
-        method: "POST",
-        body: JSON.stringify({ inputs: text }),
-      }
-    )
-      .then((response) => response.json())
-      .then((data) => {
-        let score =
-          data[0][0].label === "Fake"
-            ? (data[0][0].score * 100).toFixed(1)
-            : (data[0][1].score * 100).toFixed(1);
-        console.log(`AI Detection Score: ${score}%`);
+  const analyzeText = async () => {
+    console.log(process.env.API_URL);
+    console.log(process.env.API_KEY);
+    try {
+      const response = await fetch(
+        `${process.env.API_URL}`,
+        {
+          headers: {
+            Authorization: `Bearer ${process.env.API_KEY}`,
+            "Content-Type": "application/json",
+          },
+          method: "POST",
+          body: JSON.stringify({ inputs: text }),
+        }
+      );
 
-        setScore(Number(score));
-        setProgress(Number(score));
-        setIsFake(data[0][0].label === "Fake");
-        setShowDetection(true);
-      })
-      .catch((error) => console.error(error));
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+
+      const data = await response.json();
+      let score = data[0][0].label === "Fake"
+        ? (data[0][0].score * 100).toFixed(1)
+        : (data[0][1].score * 100).toFixed(1);
+
+      console.log(`AI Detection Score: ${score}%`);
+
+      setScore(Number(score));
+      setProgress(Number(score));
+      setIsFake(data[0][0].label === "Fake");
+      setShowDetection(true);
+    } catch (error) {
+      console.error(error);
+      // Handle error in a user-friendly way here
+    }
   };
+
 
   const handleInputChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
     setText(event.target.value);
